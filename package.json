@@ -1,0 +1,29 @@
+{
+  "name": "acurite-interceptor",
+  "version": "0.0.1",
+  "description": "Intercept Acurite Access information and forward it to InfluxDB or MQTT",
+  "main": "server.js",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/klawil/acurite-interceptor.git"
+  },
+  "keywords": [
+    "acurite",
+    "mqtt",
+    "influxdb"
+  ],
+  "author": "William Klausmeyer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/klawil/acurite-interceptor/issues"
+  },
+  "homepage": "https://github.com/klawil/acurite-interceptor#readme"
+}

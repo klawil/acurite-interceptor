@@ -1,0 +1,11 @@
+services:
+  acurite-interceptor:
+    image: acurite
+    container_name: acurite-interceptor
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    environment:
+      INFLUXDB_HOST: http://IP:PORT
+      HOST: "FQDN or IP"
+      ACURITE_IPS: "IPs CSV"
