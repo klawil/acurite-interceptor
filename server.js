@@ -222,7 +222,10 @@ config.acurite.ips
       }
 
       console.log(`Access IP ${ip} had host ${currentHost}, changing to ${config.host}`);
-      return fetch(`http://${ip}/config.cgi?ser=${config.host}`)
+      return fetch(`http://${ip}/config.cgi`, {
+        method: 'POST',
+        body: `ser=${config.host}`
+      })
         .then((r) => r.text());
     })
     .catch((e) => {
