@@ -10,6 +10,7 @@ const execSync = require('child_process').execSync;
 console.log('[....] Creating SSL certificates...');
 execSync('mkdir -p /etc/ssl');
 execSync(`openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/key.pem -out /etc/ssl/cert.pem -days 365 -nodes  -subj "/C=NA/ST=NA/L=NA/O=NA/CN=${config.host}"`);
+execSync('service nginx restart');
 console.log('[DONE] Creating SSL certificates');
 
 // Make the server response to the weatherstation query
@@ -196,19 +197,13 @@ function onRequest(clientReq, clientRes) {
 }
 
 // Set up the InfluxDB and MQTT connections and start the server
-const https = require('https');
-const fs = require('fs');
-
 Promise.all([
   influxdb.checkAndCreateDatabase()
 ])
   .then(() => {
-    https.createServer({
-      key: fs.readFileSync('/etc/ssl/key.pem'),
-      cert: fs.readFileSync('/etc/ssl/cert.pem')
-    }, onRequest)
-      .listen(443);
-    console.log('Listening on port 443');
+    http.createServer(onRequest)
+      .listen(80);
+    console.log('Listening on port 80');
   });
 
 // Look for AcuRites and push the new host to them
