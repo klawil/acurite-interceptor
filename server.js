@@ -124,6 +124,9 @@ function onRequest(clientReq, clientRes) {
     params[key] = value;
   }
 
+  // Round the time to the nearest minute
+  params.dateutc = Math.round(new Date(`${params.dateutc}Z`).getTime() / 60000) * 60000;
+
   // Parse the parameters
   Object.keys(params)
     .forEach((key) => {
@@ -159,9 +162,6 @@ function onRequest(clientReq, clientRes) {
       });
   }
 
-  // Round the time to the nearest minute
-  params.dateutc = Math.round(new Date(`${params.dateutc}Z`).getTime() / 60000) * 60000;
-
   // Create the data and tags
   const {
     sensor,
@@ -178,6 +178,9 @@ function onRequest(clientReq, clientRes) {
   ) {
     return;
   }
+
+  // Log the sensor reading
+  console.log(`New reading from ${mt}:${sensor} at ${dateutc}`);
 
   // Record in the object
   lastSeen[sensor] = lastSeen[sensor] || {};
