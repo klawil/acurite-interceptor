@@ -77,7 +77,7 @@ const configurations = {
     unit_of_measurement: mesaurements.speed
   },
   windgustdir: {
-    name: 'Wind Direction'
+    name: 'Wind Direction (Gust)'
   },
   windspeed: {
     name: 'Wind Speed',
