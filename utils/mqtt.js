@@ -3,7 +3,7 @@ const config = require('./config');
 
 const mesaurements = {
   temp: config.celsius ? '°C' : '°F',
-  pressure: config.celsius ? 'hPa' : 'inHg',
+  pressure: config.celsius ? 'pa' : 'inHg',
   length: config.celsius ? 'mm' : 'in',
   speed: config.celsius ? 'kmh' : 'mph'
 };
@@ -54,7 +54,7 @@ const configurations = {
   rssi: {
     device_class: 'signal_strength',
     name: 'Signal Strength',
-    unit_of_measurement: 'dB'
+    unit_of_measurement: 'rssi'
   },
   temp: {
     device_class: 'temperature',
@@ -135,8 +135,6 @@ function sendMetrics(attributes, values) {
       });
   }
 
-  console.log(`${baseTopic}/state`);
-  console.log(values);
   client.publish(`${baseTopic}/state`, JSON.stringify(values));
 }
 
