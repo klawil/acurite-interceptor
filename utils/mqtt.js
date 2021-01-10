@@ -129,7 +129,6 @@ function sendMetrics(attributes, values) {
         config.name = `${attributes.mt} ${config.name}`;
         config.state_topic = `${baseTopic}/state`;
         config.value_template = `{{ value_json.${key} }}`;
-        config.device = `${attributes.mt} - ${attributes.sensor}`;
 
         client.publish(`${baseTopic}${key}/config`, JSON.stringify(config));
       });
