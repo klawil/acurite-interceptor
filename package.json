@@ -4,6 +4,7 @@
   "description": "Intercept Acurite Access information and forward it to InfluxDB or MQTT",
   "main": "server.js",
   "dependencies": {
+    "mqtt": "^4.2.6",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {},

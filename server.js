@@ -58,6 +58,7 @@ const keysToRename = {
 const http = require('http');
 const URL = require('url').URL;
 const influxdb = require('./utils/influxdb');
+const mqtt = require('./utils/mqtt');
 
 let lastSeen = {};
 let last10Reqs = [];
@@ -197,6 +198,13 @@ function onRequest(clientReq, clientRes) {
   );
 
   // Send to MQTT (if configured)
+  mqtt.sendMetrics(
+    {
+      sensor,
+      mt
+    },
+    data
+  );
 }
 
 // Set up the InfluxDB and MQTT connections and start the server

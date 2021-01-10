@@ -40,3 +40,17 @@ Use these to set up InfluxDB.
 | --- | --- | --- | --- |
 | INFLUXDB_HOST | Yes |  | The host used to connect to InfluxDB. Should be `http://{Hostname}:{Port}` |
 | INFLUXDB_DATABASE | No | `acurite` | The database the data will be inserted into |
+
+### MQTT Options
+
+Use these to set up MQTT.
+
+| Name | Required | Default | Description |
+| --- | --- | --- | --- |
+| MQTT_URL | Yes |  | The URL used to connect to MQTT. Should be `mqtt://{Hostname}:{Port}` |
+| MQTT_BASE_TOPIC | No | `homeassistant/sensor/{sensor}/{mt}` | The base topic for MQTT. See below for detailed description. |
+
+#### MQTT topics
+This is used as a basis for a configuration and state channel. The configuration will be sent to this channel + `${name}/config` and the state will be sent as a JSON object to channel + `/state`. This supports auto detection in Home Assistant.
+
+The topic can have two variables in it: `sensor` and `mt`. `sensor` is the ID of the sensor and `mt` is the sensor type (e.g. `atlas`).
