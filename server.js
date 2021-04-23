@@ -39,7 +39,8 @@ const keysToConvert = {
   rain: inToMm,
   windgust: mphToKmh,
   windspeed: mphToKmh,
-  windspeedavg: mphToKmh
+  windspeedavg: mphToKmh,
+  last_strike_distance: mphToKmh
 };
 
 // Mapping defining renaming keys (to remove units)
