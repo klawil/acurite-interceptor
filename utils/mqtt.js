@@ -5,7 +5,8 @@ const mesaurements = {
   temp: config.celsius ? '°C' : '°F',
   pressure: config.celsius ? 'pa' : 'inHg',
   length: config.celsius ? 'mm' : 'in',
-  speed: config.celsius ? 'kmh' : 'mph'
+  speed: config.celsius ? 'kmh' : 'mph',
+  distance: config.celsius ? 'km' : 'mi'
 };
 
 const configurations = {
@@ -38,6 +39,15 @@ const configurations = {
     name: 'Humidity',
     unit_of_measurement: '%'
   },
+  last_strike_ts: {
+    name: 'Lightning Last Time',
+    device_class: 'timestamp',
+    unit_of_measurement: 'ISO8601'
+  },
+  last_strike_distance: {
+    name: 'Lightning Last Distance',
+    unit_of_measurement: mesaurements.distance
+  },
   lightintensity: {
     device_class: 'illuminance',
     name: 'Light Intensity',
@@ -55,6 +65,9 @@ const configurations = {
     device_class: 'signal_strength',
     name: 'Signal Strength',
     unit_of_measurement: 'rssi'
+  },
+  strikecount: {
+    name: 'Lightning Strikes'
   },
   temp: {
     device_class: 'temperature',
@@ -132,6 +145,14 @@ function sendMetrics(attributes, values) {
 
         client.publish(`${baseTopic}${key}/config`, JSON.stringify(config));
       });
+  }
+
+  // Make the timestamp ISO8601 compliant
+  values = {
+    ...values
+  };
+  if (typeof values.last_strike_ts !== 'undefined') {
+    values.last_strike_ts = values.last_strike_ts.replace(/"/g, '') + 'Z';
   }
 
   client.publish(`${baseTopic}/state`, JSON.stringify(values));
