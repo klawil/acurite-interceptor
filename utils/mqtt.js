@@ -104,21 +104,25 @@ const configurations = {
 
 let client = null;
 let sentConfig = [];
+let sendConfigs = [];
 
 if (config.mqtt.enabled) {
   console.log('Connecting to MQTT');
   client = mqtt.connect(config.mqtt.url);
   client.on('connect', () => {
     console.log('Connected to MQTT');
-    client.subscribe('#', (e) => {
-      if (e) {
-        console.error(`Error Subscribing`);
-        console.error(e);
-        return;
-      }
+  });
 
-      console.log('Subscribed');
-    });
+  client.subscribe('hass/status', () => {
+    console.log('Subscribed to HASS topic');
+  });
+
+  client.on('message', (topic, message) => {
+    if (topic === 'hass/status' && message.toString() === 'online') {
+      console.log('Sending configuration messages');
+      sendConfigs.forEach((f) => f());
+      return;
+    }
   });
 }
 
@@ -133,18 +137,22 @@ function sendMetrics(attributes, values) {
   if (sentConfig.indexOf(baseTopic) === -1) {
     console.log('Publishing Configuration Topics');
     sentConfig.push(baseTopic);
-    Object.keys(values)
-      .filter((key) => typeof configurations[key] !== 'undefined')
-      .forEach((key) => {
-        let config = {
-          ...configurations[key]
-        };
-        config.name = `${attributes.mt} ${config.name}`;
-        config.state_topic = `${baseTopic}/state`;
-        config.value_template = `{{ value_json.${key} }}`;
+    let sendConfig = () => {
+      Object.keys(values)
+        .filter((key) => typeof configurations[key] !== 'undefined')
+        .forEach((key) => {
+          let config = {
+            ...configurations[key]
+          };
+          config.name = `${attributes.mt} ${config.name}`;
+          config.state_topic = `${baseTopic}/state`;
+          config.value_template = `{{ value_json.${key} }}`;
 
-        client.publish(`${baseTopic}${key}/config`, JSON.stringify(config));
-      });
+          client.publish(`${baseTopic}${key}/config`, JSON.stringify(config));
+        });
+    };
+    sendConfig();
+    sendConfigs.push(sendConfig);
   }
 
   // Make the timestamp ISO8601 compliant
