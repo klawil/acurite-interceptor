@@ -106,6 +106,8 @@ let client = null;
 let sentConfig = [];
 let sendConfigs = [];
 
+let lastReadings = {};
+
 if (config.mqtt.enabled) {
   console.log('Connecting to MQTT');
   client = mqtt.connect(config.mqtt.url);
@@ -121,6 +123,7 @@ if (config.mqtt.enabled) {
     if (topic === 'hass/status' && message.toString() === 'online') {
       console.log('Sending configuration messages');
       sendConfigs.forEach((f) => f());
+      Object.keys(lastReadings).forEach((key) => lastReadings[key]());
       return;
     }
   });
@@ -163,7 +166,10 @@ function sendMetrics(attributes, values) {
     values.last_strike_ts = values.last_strike_ts.replace(/"/g, '') + 'Z';
   }
 
-  client.publish(`${baseTopic}/state`, JSON.stringify(values));
+  lastReadings[baseTopic] = () => {
+    client.publish(`${baseTopic}/state`, JSON.stringify(values));
+  };
+  lastReadings[baseTopic]();
 }
 
 module.exports = {
