@@ -40,7 +40,8 @@ const keysToConvert = {
   windgust: mphToKmh,
   windspeed: mphToKmh,
   windspeedavg: mphToKmh,
-  last_strike_distance: mphToKmh
+  last_strike_distance: mphToKmh,
+  strikecount: (val) => val % 256
 };
 
 // Mapping defining renaming keys (to remove units)
