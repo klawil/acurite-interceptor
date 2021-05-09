@@ -26,7 +26,7 @@ const response = JSON.stringify({
 // Helper functions for converting to metric
 const fToC = (v) => Math.round((v - 32) * 50 / 9) / 10; // Farenheit to Celsius
 const mphToKmh = (v) => Math.round(v * 1.60934); // Miles per hour to Kilometers per hour
-const inToMm = (v) => Math.round(v * 25.4); // inches to millimeters
+const inToMm = (v) => Math.round(v * 254) / 10; // inches to millimeters
 const inToPa = (v) => Math.round(v * 3386); // inches of mercury to pascals
 const keysToConvert = {
   barom: inToPa,
