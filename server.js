@@ -218,23 +218,3 @@ Promise.all([
       .listen(80);
     console.log('Listening on port 80');
   });
-
-// Look for AcuRites and push the new host to them
-const fetch = require('node-fetch');
-config.acurite.ips
-  .forEach((ip) => fetch(`http://${ip}/`)
-    .then((r) => r.text())
-    .then((html) => html.match(/\$\('txtSer'\)\.value = '([^']+)'/)[1])
-    .then((currentHost) => {
-      if (currentHost === config.host) {
-        console.log(`Access IP ${ip} already has host ${config.host}`);
-        return;
-      }
-
-      console.log(`Access IP ${ip} had host ${currentHost}, changing to ${config.host}`);
-      return execSync(`curl -d 'ser=${config.host}' http://${ip}/config.cgi`);
-    })
-    .catch((e) => {
-      console.error(`Error with Acurite Access ${ip}:`);
-      console.error(e);
-    }));
