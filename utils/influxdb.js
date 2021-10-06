@@ -21,6 +21,10 @@ function checkAndCreateDatabase() {
       console.log(`InfluxDB Database "${config.influxdb.database}" does not exist (databases are ${databases.join(', ')})`);
       return fetch(`${config.influxdb.host}/query?q=CREATE+DATABASE+"${config.influxdb.database}"+WITH+DURATION+14d&db=_internal`)
         .then((r) => r.text());
+    })
+    .catch((e) => {
+      return new Promise((res) => setTimeout(res, 5000))
+        .then(() => checkAndCreateDatabase())
     });
 }
 
