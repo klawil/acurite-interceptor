@@ -140,9 +140,6 @@ function onRequest(clientReq, clientRes) {
       } else if (params[key] === '') {
         // If it is an empty string, delete it
         delete params[key];
-      } else if (key !== 'mt') {
-        // If it isn't a number or an empty string put it in quotes (unless it is `mt`)
-        params[key] = `"${params[key]}"`;
       }
     });
 
@@ -170,6 +167,7 @@ function onRequest(clientReq, clientRes) {
     sensor,
     mt,
     dateutc,
+    id,
     ...data
   } = params;
 
@@ -194,7 +192,8 @@ function onRequest(clientReq, clientRes) {
     dateutc,
     {
       sensor,
-      mt
+      mt,
+      id,
     },
     data
   );
@@ -203,18 +202,20 @@ function onRequest(clientReq, clientRes) {
   mqtt.sendMetrics(
     {
       sensor,
-      mt
+      mt,
+      id,
     },
     data
   );
 }
 
 // Set up the InfluxDB and MQTT connections and start the server
+const port = 4000;
 Promise.all([
   influxdb.checkAndCreateDatabase()
 ])
   .then(() => {
     http.createServer(onRequest)
-      .listen(80);
-    console.log('Listening on port 80');
+      .listen(port);
+    console.log(`Listening on port ${port}`);
   });
