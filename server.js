@@ -1,17 +1,17 @@
 // Validate the configuration
 const config = require('./utils/config');
-if (typeof config.host === 'undefined') {
-  console.error(new Error(`'HOST' environment variable must be defined`));
-  process.exit(2);
-}
+// if (typeof config.host === 'undefined') {
+//   console.error(new Error(`'HOST' environment variable must be defined`));
+//   process.exit(2);
+// }
 
-// Make SSL certs (I don't check to see if they already exist in case the hostname has changed and so it's less likely they will expire)
-const execSync = require('child_process').execSync;
-console.log('[....] Creating SSL certificates...');
-execSync('mkdir -p /etc/ssl');
-execSync(`openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/key.pem -out /etc/ssl/cert.pem -days 365 -nodes  -subj "/C=NA/ST=NA/L=NA/O=NA/CN=${config.host}"`);
-execSync('service nginx restart');
-console.log('[DONE] Creating SSL certificates');
+// // Make SSL certs (I don't check to see if they already exist in case the hostname has changed and so it's less likely they will expire)
+// const execSync = require('child_process').execSync;
+// console.log('[....] Creating SSL certificates...');
+// execSync('mkdir -p /etc/ssl');
+// execSync(`openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/key.pem -out /etc/ssl/cert.pem -days 365 -nodes  -subj "/C=NA/ST=NA/L=NA/O=NA/CN=${config.host}"`);
+// execSync('service nginx restart');
+// console.log('[DONE] Creating SSL certificates');
 
 // Make the server response to the weatherstation query
 const tzFormat = new Intl.NumberFormat('en-us', {
@@ -44,6 +44,31 @@ const keysToConvert = {
   strikecount: (val) => val % 256
 };
 
+// Helper function to create wind direction from degrees
+const directions = [
+  'N',
+  'NE',
+  'E',
+  'SE',
+  'S',
+  'SW',
+  'W',
+  'NW',
+  'N',
+];
+const degreeToDir = (degree) => {
+  const degreeArc = 360 / (directions.length - 1);
+
+  let i = 0;
+  let maxDegree = degreeArc / 2;
+  while (i < directions.length && degree > maxDegree) {
+    i++;
+    maxDegree += degreeArc;
+  }
+
+  return directions[i];
+}
+
 // Mapping defining renaming keys (to remove units)
 const keysToRename = {
   baromin: 'barom',
@@ -68,6 +93,7 @@ function onRequest(clientReq, clientRes) {
   // Respond with the devices and when we last saw them at the root URL
   if (clientReq.url === '/') {
     const responseText = JSON.stringify({
+      local: true,
       lastSeen,
       last10Reqs
     });
@@ -94,6 +120,7 @@ function onRequest(clientReq, clientRes) {
   // Add to the last 10 requests
   last10Reqs.push(clientReq.url);
   last10Reqs = last10Reqs.slice(-10);
+  console.log(clientReq.url);
 
   // Send on to AcuRite (if configured)
   if (config.acurite.forward) {
@@ -160,6 +187,14 @@ function onRequest(clientReq, clientRes) {
           params[key] = keysToConvert[key](params[key]);
         }
       });
+  }
+
+  // Add the direction parameters
+  if (typeof params.winddir === 'number' && !Number.isNaN(params.winddir)) {
+    params.winddir_str = degreeToDir(params.winddir);
+  }
+  if (typeof params.windgustdir === 'number' && !Number.isNaN(params.windgustdir)) {
+    params.windgustdir_str = degreeToDir(params.windgustdir);
   }
 
   // Create the data and tags

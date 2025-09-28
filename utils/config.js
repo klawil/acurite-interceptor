@@ -4,10 +4,15 @@ const config = {
     database: process.env.INFLUXDB_DATABASE || 'acurite',
     host: process.env.INFLUXDB_HOST
   },
-  mqtt: {
+  mqtt_old: {
     enabled: typeof process.env.MQTT_URL === 'string',
     url: process.env.MQTT_URL,
     topic: process.env.MQTT_BASE_TOPIC || 'homeassistant/sensor/{sensor}/{mt}'
+  },
+  mqtt: {
+    enabled: true,
+    url: 'mqtt://server.klawil.net:5004',
+    topic: 'homeassistant/sensor/{sensor}/{mt}',
   },
   host: process.env.HOST,
   acurite: {

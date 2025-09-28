@@ -134,6 +134,8 @@ const configurations = {
   strikecount: {
     ...state,
     name: 'Lightning Strikes',
+    unit_of_measurement: 'count',
+    state_class: 'total_increasing',
   },
   temp: {
     ...state,
@@ -143,7 +145,8 @@ const configurations = {
   },
   uvindex: {
     ...state,
-    name: 'UV Index'
+    name: 'UV Index',
+    unit_of_measurement: ' ',
   },
   windchill: {
     ...state,
@@ -153,7 +156,8 @@ const configurations = {
   },
   winddir: {
     ...state,
-    name: 'Wind Direction'
+    name: 'Wind Direction (degrees)',
+    unit_of_measurement: '°',
   },
   windgust: {
     ...state,
@@ -163,7 +167,18 @@ const configurations = {
   },
   windgustdir: {
     ...state,
-    name: 'Wind Direction (Gust)'
+    name: 'Wind Direction (Gust, degrees)',
+    unit_of_measurement: '°',
+  },
+  winddir_str: {
+    ...state,
+    name: 'Wind Direction',
+    device_class: 'enum',
+  },
+  windgustdir_str: {
+    ...state,
+    name: 'Wind Direction (Gust)',
+    device_class: 'enum',
   },
   windspeed: {
     ...state,
