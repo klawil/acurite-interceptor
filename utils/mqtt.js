@@ -58,7 +58,7 @@ const state = {
 
 const mesaurements = {
   temp: config.celsius ? '°C' : '°F',
-  pressure: config.celsius ? 'pa' : 'inHg',
+  pressure: config.celsius ? 'hPa' : 'inHg',
   length: config.celsius ? 'mm' : 'in',
   speed: config.celsius ? 'km/h' : 'mph',
   distance: config.celsius ? 'km' : 'mi'
@@ -182,7 +182,6 @@ const configurations = {
     device_class: 'signal_strength',
     name: 'Signal Strength',
     entity_category: 'diagnostic',
-    unit_of_measurement: 'rssi'
   },
   hubbattery: {
     ...state,
